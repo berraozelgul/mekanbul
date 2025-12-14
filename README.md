@@ -54,7 +54,7 @@ Yorum Getirme (GET /api/venues/:venueid/comments/:commentid)
 Yorum Güncelleme (PUT /api/venues/:venueid/comments/:commentid)
 ![Yorum Güncelle](test/updateComment.png)
 
-### 🗑️ Yorum Silme (DELETE /api/venues/:venueid/comments/:commentid)
+Yorum Silme (DELETE /api/venues/:venueid/comments/:commentid)
 ![Yorum Sil](test/deleteComment.png)
 
 
