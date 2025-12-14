@@ -54,33 +54,49 @@ const listVenues = function (req, res) {
 };
 
 const addVenue = async function (req, res) {
-    //createResponse(res, 200, { status: "başarılı" });
+    console.log("REQ.BODY:", req.body);
 
-    try{
-        await Venue.create({
-            ...req.body,
-            coordinates:[req.body.lat,req.body.long],
-            hours:[{
-                day:req.body.day1,
-                open:req.body.open1,
-                close:req.body.close1,
-                isClosed:req.body.isClosed1
-            },{
-                day:req.body.day2,
-                open:req.body.open2,
-                close:req.body.close2,
-                isClosed:req.body.isClosed2
-            }
-            ]
-        }).then(function (venue) {
-            createResponse(res,201,venue);
+    if (!req.body.day1 || !req.body.day2) {
+        return createResponse(res, 400, {
+            error: "day1 veya day2 eksik",
+            body: req.body
         });
     }
-    catch(err){
-        createResponse(res,404,err);
-    }
 
-}
+    try {
+        const venue = await Venue.create({
+            name: req.body.name,
+            address: req.body.address,
+            rating: parseInt(req.body.rating),
+            foodanddrink: req.body.foodanddrink.split(","),
+
+            coordinates: [
+                parseFloat(req.body.long),
+                parseFloat(req.body.lat)
+            ],
+
+            hours: [
+                {
+                    day: req.body.day1,
+                    open: req.body.open1,
+                    close: req.body.close1,
+                    isClosed: req.body.isClosed1 === "true"
+                },
+                {
+                    day: req.body.day2,
+                    open: req.body.open2,
+                    close: req.body.close2,
+                    isClosed: req.body.isClosed2 === "true"
+                }
+            ]
+        });
+
+        createResponse(res, 201, venue);
+    } catch (err) {
+        createResponse(res, 400, err);
+    }
+};
+
 
 const getVenue = async function (req, res) {
     try {
