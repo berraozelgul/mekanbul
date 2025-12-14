@@ -57,11 +57,15 @@ const addVenue = async function (req, res) {
     console.log("REQ.BODY:", req.body);
 
     const rating = parseInt(req.body.rating, 10);
+    const lat = parseFloat(req.body.lat);
+    const long = parseFloat(req.body.long);
+
     if (isNaN(rating)) {
-        return createResponse(res, 400, {
-            error: "rating sayısal olmalı",
-            value: req.body.rating
-        });
+        return createResponse(res, 400, { error: "rating sayısal olmalı" });
+    }
+
+    if (isNaN(lat) || isNaN(long)) {
+        return createResponse(res, 400, { error: "lat / long sayısal olmalı" });
     }
 
     try {
@@ -69,12 +73,11 @@ const addVenue = async function (req, res) {
             name: req.body.name,
             address: req.body.address,
             rating: rating,
-            foodanddrink: req.body.foodanddrink.split(","),
+            foodanddrink: req.body.foodanddrink
+              ? req.body.foodanddrink.split(",")
+              : [],
 
-            coordinates: [
-                parseFloat(req.body.long),
-                parseFloat(req.body.lat)
-            ],
+            coordinates: [long, lat],
 
             hours: [
                 {
@@ -94,10 +97,12 @@ const addVenue = async function (req, res) {
 
         createResponse(res, 201, venue);
     } catch (err) {
-        createResponse(res, 400, err);
+        createResponse(res, 400, {
+            message: err.message,
+            errors: err.errors
+        });
     }
 };
-
 
 const getVenue = async function (req, res) {
     try {
