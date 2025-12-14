@@ -1,71 +1,98 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var Venue = mongoose.model("venue");
 
 const createResponse = function (res, status, content) {
     res.status(status).json(content);
-}
-
-var converter = (function () {
-    var earthRadius = 6371; // km
-    var radian2Kilometer = function (radian) {
-        return parseFloat(radian * earthRadius);
-    };
-    var kilometer2Radian = function (distance) {
-        return parseFloat(distance / earthRadius);
-    };
-    return {
-        radian2Kilometer, kilometer2Radian,
-    }
-})();
-
-const listVenues = function (req, res) {
-    var lat = parseFloat(req.query.lat) || 0;
-    var long = parseFloat(req.query.long) || 0;
-    var point = { type: "Point", coordinates: [lat, long] };
-    var geoOptions = {
-        distanceField: "distance", spherical: true,
-        maxDistance: converter.radian2Kilometer(100)
-    };
-    try {
-        Venue.aggregate([
-            {
-                $geoNear: {
-                    near: point, ...geoOptions,
-                }
-            }]).then((result) => {
-            const venues = result.map(function (venue) {
-                return {
-                    distance: converter.kilometer2Radian(venue.distance),
-                    name: venue.name,
-                    address: venue.address,
-                    rating: venue.rating,
-                    foodanddrink: venue.foodanddrink,
-                    id: venue._id,
-                };
-            });
-            if (venues.length > 0)
-                createResponse(res, "200", venues);
-            else
-                createResponse(res, "200", { "status": "Civarda mekan yok" });
-        })
-    } catch (error) {
-        createResponse(res, "404", error);
-    }
 };
 
-const addVenue = async function (req, res) {
-    console.log("REQ.BODY:", req.body);
+// 🔁 KM ↔ RADIAN
+var converter = (function () {
+    var earthRadius = 6371;
+    return {
+        radian2Kilometer: function (r) {
+            return r * earthRadius;
+        },
+        kilometer2Radian: function (d) {
+            return d / earthRadius;
+        }
+    };
+})();
 
-    const rating = parseInt(req.body.rating, 10);
-    const lat = parseFloat(req.body.lat);
-    const long = parseFloat(req.body.long);
+/* =====================================================
+   GET /api/venues
+   ===================================================== */
+const listVenues = function (req, res) {
 
-    if (isNaN(rating)) {
-        return createResponse(res, 400, { error: "rating sayısal olmalı" });
-    }
+    const lat = parseFloat(req.query.lat);
+    const long = parseFloat(req.query.long);
 
     if (isNaN(lat) || isNaN(long)) {
-        return createResponse(res, 400, { error: "lat / long sayısal olmalı" });
+        return createResponse(res, 400, {
+            message: "lat ve long query parametreleri zorunludur"
+        });
+    }
+
+    const point = {
+        type: "Point",
+        coordinates: [long, lat] // ⚠️ MUTLAKA [LONG, LAT]
+    };
+
+    const geoOptions = {
+        distanceField: "distance",
+        spherical: true,
+        maxDistance: converter.kilometer2Radian(100)
+    };
+
+    Venue.aggregate([
+        {
+            $geoNear: {
+                near: point,
+                ...geoOptions
+            }
+        }
+    ]).then(results => {
+
+        if (!results.length) {
+            return createResponse(res, 200, {
+                status: "Civarda mekan yok"
+            });
+        }
+
+        const venues = results.map(v => ({
+            distance: converter.radian2Kilometer(v.distance),
+            name: v.name,
+            address: v.address,
+            rating: v.rating,
+            foodanddrink: v.foodanddrink,
+            id: v._id
+        }));
+
+        createResponse(res, 200, venues);
+
+    }).catch(err => {
+        createResponse(res, 500, err);
+    });
+};
+
+/* =====================================================
+   POST /api/venues
+   ===================================================== */
+const addVenue = async function (req, res) {
+
+    const lat = parseFloat(req.body.lat);
+    const long = parseFloat(req.body.long);
+    const rating = parseInt(req.body.rating, 10);
+
+    if (isNaN(lat) || isNaN(long)) {
+        return createResponse(res, 400, {
+            message: "lat ve long sayısal olmalıdır"
+        });
+    }
+
+    if (isNaN(rating)) {
+        return createResponse(res, 400, {
+            message: "rating sayısal olmalıdır"
+        });
     }
 
     try {
@@ -74,8 +101,8 @@ const addVenue = async function (req, res) {
             address: req.body.address,
             rating: rating,
             foodanddrink: req.body.foodanddrink
-              ? req.body.foodanddrink.split(",")
-              : [],
+                ? req.body.foodanddrink.split(",")
+                : [],
 
             coordinates: [long, lat],
 
@@ -96,6 +123,7 @@ const addVenue = async function (req, res) {
         });
 
         createResponse(res, 201, venue);
+
     } catch (err) {
         createResponse(res, 400, {
             message: err.message,
@@ -104,53 +132,95 @@ const addVenue = async function (req, res) {
     }
 };
 
+/* =====================================================
+   GET /api/venues/:venueid
+   ===================================================== */
 const getVenue = async function (req, res) {
+
     try {
-        await Venue.findById(req.params.venueid).exec().then(function (venue) {
-            createResponse(res, 200, venue);
+        const venue = await Venue.findById(req.params.venueid);
+
+        if (!venue) {
+            return createResponse(res, 404, {
+                status: "Böyle bir mekan yok"
+            });
+        }
+
+        createResponse(res, 200, venue);
+
+    } catch (err) {
+        createResponse(res, 404, {
+            status: "Geçersiz mekan id"
         });
-
     }
-    catch (err) {
-        createResponse(res, 404, { status: "böyle bir mekan yok" });
-    }
-    //createResponse(res,200,{status:"getvenue başarılı"});
-}
-
-const updateVenue = async function (req, res) {
-   try{
-       const updatedVenue = await Venue.findByIdAndUpdate(req.params.venueid,{
-           ...req.body,
-           coordinates:[req.body.lat,req.body.long],
-           hours:[
-               {
-                   days: req.body.day1,
-                   open: req.body.open1,
-                   close: req.body.close1,
-                   isClosed:req.body.isClosed1
-               },
-               {
-                   days: req.body.day2,
-                   open: req.body.open2,
-                   close: req.body.close2,
-                   isClosed:req.body.isClosed2
-               }
-           ]
-       },{new:true}
-       );
-       createResponse(res,201,updatedVenue);
-   } catch (error) {
-       createResponse(res,400,{status: "Güncelleme başarısız.",error});
-   }
 };
 
-const deleteVenue =async function (req, res) {
-    try{
-        await Venue.findByIdAndDelete(req.params.venueid).then(function (venue) {
-            createResponse(res,200,{status:venue.name+"isimli mekan silindi."});
+/* =====================================================
+   PUT /api/venues/:venueid
+   ===================================================== */
+const updateVenue = async function (req, res) {
+
+    const lat = parseFloat(req.body.lat);
+    const long = parseFloat(req.body.long);
+
+    try {
+        const venue = await Venue.findByIdAndUpdate(
+            req.params.venueid,
+            {
+                name: req.body.name,
+                address: req.body.address,
+                rating: parseInt(req.body.rating, 10),
+                foodanddrink: req.body.foodanddrink
+                    ? req.body.foodanddrink.split(",")
+                    : [],
+                coordinates: [long, lat],
+                hours: [
+                    {
+                        day: req.body.day1,
+                        open: req.body.open1,
+                        close: req.body.close1,
+                        isClosed: req.body.isClosed1 === "true"
+                    },
+                    {
+                        day: req.body.day2,
+                        open: req.body.open2,
+                        close: req.body.close2,
+                        isClosed: req.body.isClosed2 === "true"
+                    }
+                ]
+            },
+            { new: true }
+        );
+
+        createResponse(res, 200, venue);
+
+    } catch (err) {
+        createResponse(res, 400, err);
+    }
+};
+
+/* =====================================================
+   DELETE /api/venues/:venueid
+   ===================================================== */
+const deleteVenue = async function (req, res) {
+
+    try {
+        const venue = await Venue.findByIdAndDelete(req.params.venueid);
+
+        if (!venue) {
+            return createResponse(res, 404, {
+                status: "Böyle bir mekan yok"
+            });
+        }
+
+        createResponse(res, 200, {
+            status: venue.name + " isimli mekan silindi"
         });
-    } catch (error){
-        createResponse(res,404,{status:"Böyle bir mekan yok."})
+
+    } catch (err) {
+        createResponse(res, 404, {
+            status: "Geçersiz mekan id"
+        });
     }
 };
 
@@ -160,4 +230,4 @@ module.exports = {
     getVenue,
     updateVenue,
     deleteVenue
-}
+};
