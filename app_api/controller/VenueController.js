@@ -21,10 +21,11 @@ var converter = (function () {
 const listVenues = function (req, res) {
     var lat = parseFloat(req.query.lat) || 0;
     var long = parseFloat(req.query.long) || 0;
-    var point = { type: "Point", coordinates: [lat, long] };
+    // geoNear sorgusu için koordinat sırası [longitude, latitude] olmalıdır.
+    var point = { type: "Point", coordinates: [long, lat] }; 
     var geoOptions = {
         distanceField: "distance", spherical: true,
-        maxDistance: converter.radian2Kilometer(100)
+        maxDistance: converter.kilometer2Radian(100) // maxDistance radian cinsinden beklenir
     };
     try {
         Venue.aggregate([
@@ -33,100 +34,108 @@ const listVenues = function (req, res) {
                     near: point, ...geoOptions,
                 }
             }]).then((result) => {
-            const venues = result.map(function (venue) {
-                return {
-                    distance: converter.kilometer2Radian(venue.distance),
-                    name: venue.name,
-                    address: venue.address,
-                    rating: venue.rating,
-                    foodanddrink: venue.foodanddrink,
-                    id: venue._id,
-                };
-            });
-            if (venues.length > 0)
-                createResponse(res, "200", venues);
-            else
-                createResponse(res, "200", { "status": "Civarda mekan yok" });
-        })
+                const venues = result.map(function (venue) {
+                    return {
+                        distance: converter.radian2Kilometer(venue.distance), // Burada kilometreye çeviriyoruz
+                        name: venue.name,
+                        address: venue.address,
+                        rating: venue.rating,
+                        foodanddrink: venue.foodanddrink,
+                        id: venue._id,
+                    };
+                });
+                if (venues.length > 0)
+                    createResponse(res, 200, venues);
+                else
+                    createResponse(res, 200, { "status": "Civarda mekan yok" });
+            })
     } catch (error) {
-        createResponse(res, "404", error);
+        createResponse(res, 404, error);
     }
 };
 
 const addVenue = async function (req, res) {
-    //createResponse(res, 200, { status: "başarılı" });
-
-    try{
-        await Venue.create({
-            ...req.body,
-            coordinates:[req.body.lat,req.body.long],
-            hours:[{
-                day:req.body.day1,
-                open:req.body.open1,
-                close:req.body.close1,
-                isClosed:req.body.isClosed1
-            },{
-                day:req.body.day2,
-                open:req.body.open2,
-                close:req.body.close2,
-                isClosed:req.body.isClosed2
+    try {
+        // AWAT KULLANARAK Promise'in tamamlanmasını bekliyoruz.
+        const newVenue = await Venue.create({
+            // req.body'den gelen diğer alanları al
+            ...req.body, 
+            // MongoDB GeoJSON formatı için [BOYLAM (Long), ENLEM (Lat)] sırası kullanılır
+            coordinates: [parseFloat(req.body.long), parseFloat(req.body.lat)], 
+            // Saatler dizisini oluştur
+            hours: [{
+                day: req.body.day1,
+                open: req.body.open1,
+                close: req.body.close1,
+                isClosed: req.body.isClosed1
+            }, {
+                day: req.body.day2,
+                open: req.body.open2,
+                close: req.body.close2,
+                isClosed: req.body.isClosed2
             }
             ]
-        }).then(function (venue) {
-            createResponse(res,201,venue);
         });
-    }
-    catch(err){
-        createResponse(res,404,err);
-    }
+        
+        // BAŞARILI yanıtı anında göndererek zaman aşımını engelle.
+        createResponse(res, 201, newVenue); 
 
+    } catch (err) {
+        // Hata durumunda 400 Bad Request yanıtı gönderilir.
+        createResponse(res, 400, err); 
+    }
 }
 
 const getVenue = async function (req, res) {
     try {
         await Venue.findById(req.params.venueid).exec().then(function (venue) {
-            createResponse(res, 200, venue);
+            if (!venue) {
+                 createResponse(res, 404, { status: "böyle bir mekan yok" });
+            } else {
+                 createResponse(res, 200, venue);
+            }
         });
 
     }
     catch (err) {
         createResponse(res, 404, { status: "böyle bir mekan yok" });
     }
-    //createResponse(res,200,{status:"getvenue başarılı"});
 }
 
 const updateVenue = async function (req, res) {
    try{
-       const updatedVenue = await Venue.findByIdAndUpdate(req.params.venueid,{
-           ...req.body,
-           coordinates:[req.body.lat,req.body.long],
-           hours:[
-               {
-                   days: req.body.day1,
-                   open: req.body.open1,
-                   close: req.body.close1,
-                   isClosed:req.body.isClosed1
-               },
-               {
-                   days: req.body.day2,
-                   open: req.body.open2,
-                   close: req.body.close2,
-                   isClosed:req.body.isClosed2
-               }
-           ]
-       },{new:true}
-       );
-       createResponse(res,201,updatedVenue);
+        const updatedVenue = await Venue.findByIdAndUpdate(req.params.venueid,{
+            ...req.body,
+            coordinates:[parseFloat(req.body.long),parseFloat(req.body.lat)],
+            hours:[
+                {
+                    day: req.body.day1,
+                    open: req.body.open1,
+                    close: req.body.close1,
+                    isClosed:req.body.isClosed1
+                },
+                {
+                    day: req.body.day2,
+                    open: req.body.open2,
+                    close: req.body.close2,
+                    isClosed:req.body.isClosed2
+                }
+            ]
+        },{new:true});
+        createResponse(res,200,updatedVenue); // Güncelleme başarılıysa 200 kullanılmalıdır.
    } catch (error) {
-       createResponse(res,400,{status: "Güncelleme başarısız.",error});
+        createResponse(res,400,{status: "Güncelleme başarısız.",error});
    }
 };
 
 const deleteVenue =async function (req, res) {
     try{
-        await Venue.findByIdAndDelete(req.params.venueid).then(function (venue) {
-            createResponse(res,200,{status:venue.name+"isimli mekan silindi."});
-        });
+        const deletedVenue = await Venue.findByIdAndDelete(req.params.venueid);
+        if (!deletedVenue) {
+            createResponse(res, 404, { status: "Böyle bir mekan yok." });
+        } else {
+            createResponse(res, 200, { status: deletedVenue.name + " isimli mekan silindi." });
+        }
     } catch (error){
         createResponse(res,404,{status:"Böyle bir mekan yok."})
     }
