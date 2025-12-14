@@ -56,10 +56,11 @@ const listVenues = function (req, res) {
 const addVenue = async function (req, res) {
     console.log("REQ.BODY:", req.body);
 
-    if (!req.body.day1 || !req.body.day2) {
+    const rating = parseInt(req.body.rating, 10);
+    if (isNaN(rating)) {
         return createResponse(res, 400, {
-            error: "day1 veya day2 eksik",
-            body: req.body
+            error: "rating sayısal olmalı",
+            value: req.body.rating
         });
     }
 
@@ -67,7 +68,7 @@ const addVenue = async function (req, res) {
         const venue = await Venue.create({
             name: req.body.name,
             address: req.body.address,
-            rating: parseInt(req.body.rating),
+            rating: rating,
             foodanddrink: req.body.foodanddrink.split(","),
 
             coordinates: [
