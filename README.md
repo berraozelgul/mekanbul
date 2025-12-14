@@ -30,7 +30,7 @@ PUT /api/venues/:venueid/comments/:commentid
 
 Mekan(Venue) Tesleri  
 Mekan Ekleme (POST /api/venues)
-![Mekan Ekle](test/add-venue.png)
+![Mekan Ekle](test/addVenue.png)
 
 Mekanları Listeleme (GET /api/venues)
 ![Mekan Listele](test/listnearbyVenues.png)
