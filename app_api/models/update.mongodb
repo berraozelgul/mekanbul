@@ -1,0 +1,14 @@
+const database = 'mekanbul';
+use(database);
+db.venues.updateOne({"name":"Barida Cam Kafe"},
+  {$push: {"comments":
+    {
+      "_id": ObjectId(),
+      "author": "Berra",
+      "rating": 5,
+      "text": "Kahveler müthiş",
+      "date": new Date()
+    }
+  }
+}
+)
