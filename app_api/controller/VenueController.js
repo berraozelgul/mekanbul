@@ -64,12 +64,12 @@ const addVenue = async function (req, res) {
             coordinates: [parseFloat(req.body.long), parseFloat(req.body.lat)], 
             // Saatler dizisini oluştur
             hours: [{
-                days: req.body.days1,
+                day: req.body.day1,
                 open: req.body.open1,
                 close: req.body.close1,
                 isClosed: req.body.isClosed1
             }, {
-                days: req.body.days2,
+                day: req.body.day2,
                 open: req.body.open2,
                 close: req.body.close2,
                 isClosed: req.body.isClosed2
@@ -110,13 +110,13 @@ const updateVenue = async function (req, res) {
             coordinates:[parseFloat(req.body.long),parseFloat(req.body.lat)],
             hours:[
                 {
-                    days: req.body.days1,
+                    day: req.body.day1,
                     open: req.body.open1,
                     close: req.body.close1,
                     isClosed:req.body.isClosed1
                 },
                 {
-                    days: req.body.days2,
+                    day: req.body.day2,
                     open: req.body.open2,
                     close: req.body.close2,
                     isClosed:req.body.isClosed2

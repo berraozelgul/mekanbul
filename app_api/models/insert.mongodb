@@ -17,14 +17,14 @@ db.venues.insertOne(
   "hours": [
     {
       "_id": ObjectId(),
-      "days": "Pazartesi-Cuma",
+      "day": "Pazartesi-Cuma",
       "open": "9:00",
       "close": "23:00",
       "isClosed": false
     },
     {
       "_id": ObjectId(),
-      "days": "Cumartesi-Pazar",
+      "day": "Cumartesi-Pazar",
       "open": "11:00",
       "close": "17:00",
       "isClosed": false
