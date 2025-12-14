@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "528bedd4-8b67-456b-a9c0-0f44304323f4",
+		"name": "Şadiye Berra Özelgül",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50525757",
+		"_collection_link": "https://berraozelgul-9772546.postman.co/workspace/Berra-%25C3%2596zelg%25C3%25BCl's-Workspace~c6a0f818-c636-4b3a-8901-f2483dc4e973/collection/50525757-528bedd4-8b67-456b-a9c0-0f44304323f4?action=share&source=collection_link&creator=50525757"
+	},
+	"item": [
+		{
+			"name": "Add Venue",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Barida Cam Kafe",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "Süleyman Demirel Üniversitesi",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "foodanddrink",
+							"value": "çay,kahve,pasta",
+							"type": "text"
+						},
+						{
+							"key": "lat",
+							"value": "37.8",
+							"type": "text"
+						},
+						{
+							"key": "long",
+							"value": "30.5",
+							"type": "text"
+						},
+						{
+							"key": "day1",
+							"value": "Pazartesi-Cuma",
+							"type": "text"
+						},
+						{
+							"key": "open1",
+							"value": "9:00",
+							"type": "text"
+						},
+						{
+							"key": "close1",
+							"value": "23:00",
+							"type": "text"
+						},
+						{
+							"key": "isClosed1",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "day2",
+							"value": "Cumartesi-Pazar",
+							"type": "text"
+						},
+						{
+							"key": "open2",
+							"value": "11:00",
+							"type": "text"
+						},
+						{
+							"key": "close2",
+							"value": "17:00",
+							"type": "text"
+						},
+						{
+							"key": "isClosed2",
+							"value": "false",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Mekan Ekle",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Barida Cam Kafe",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Süleyman Demirel Üniversitesi",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "foodanddrink",
+									"value": "çay,kahve,pasta",
+									"type": "text"
+								},
+								{
+									"key": "lat",
+									"value": "37.8",
+									"type": "text"
+								},
+								{
+									"key": "long",
+									"value": "30.5",
+									"type": "text"
+								},
+								{
+									"key": "day1",
+									"value": "Pazartesi-Cuma",
+									"type": "text"
+								},
+								{
+									"key": "open1",
+									"value": "9:00",
+									"type": "text"
+								},
+								{
+									"key": "close1",
+									"value": "23:00",
+									"type": "text"
+								},
+								{
+									"key": "isClosed1",
+									"value": "false",
+									"type": "text"
+								},
+								{
+									"key": "day2",
+									"value": "Cumartesi-Pazar",
+									"type": "text"
+								},
+								{
+									"key": "open2",
+									"value": "11:00",
+									"type": "text"
+								},
+								{
+									"key": "close2",
+									"value": "17:00",
+									"type": "text"
+								},
+								{
+									"key": "isClosed2",
+									"value": "false",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://mekanbul-lpaz.vercel.app/api/venues",
+							"protocol": "https",
+							"host": [
+								"mekanbul-lpaz",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"venues"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "424"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1a8-CFODRilWkcErEeXunc4yv5YgyKs\""
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 14 Dec 2025 13:48:20 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"Barida Cam Kafe\",\n    \"address\": \"Süleyman Demirel Üniversitesi\",\n    \"rating\": 5,\n    \"foodanddrink\": [\n        \"çay\",\n        \"kahve\",\n        \"pasta\"\n    ],\n    \"coordinates\": [\n        30.5,\n        37.8\n    ],\n    \"hours\": [\n        {\n            \"day\": \"Pazartesi-Cuma\",\n            \"open\": \"9:00\",\n            \"close\": \"23:00\",\n            \"isClosed\": false,\n            \"_id\": \"693ec0241d25556ea9360376\"\n        },\n        {\n            \"day\": \"Cumartesi-Pazar\",\n            \"open\": \"11:00\",\n            \"close\": \"17:00\",\n            \"isClosed\": false,\n            \"_id\": \"693ec0241d25556ea9360377\"\n        }\n    ],\n    \"_id\": \"693ec0241d25556ea9360375\",\n    \"comments\": [],\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Venue",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc1254075a",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc1254075a"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Nearby Venues",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues?lat=37.76&long=30.55",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "37.76"
+						},
+						{
+							"key": "long",
+							"value": "30.55"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Venue",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Cam Kafe ",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "SDU Batı Yerleşke ",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "foodanddrink",
+							"value": "çay,kahve,tost",
+							"type": "text"
+						},
+						{
+							"key": "lat",
+							"value": "37.83",
+							"type": "text"
+						},
+						{
+							"key": "long",
+							"value": "30.52",
+							"type": "text"
+						},
+						{
+							"key": "day1",
+							"value": "Pazartesi-Cuma",
+							"type": "text"
+						},
+						{
+							"key": "open1",
+							"value": "10:00",
+							"type": "text"
+						},
+						{
+							"key": "close1",
+							"value": "22:00",
+							"type": "text"
+						},
+						{
+							"key": "isClosed1",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "day2",
+							"value": "Cumartesi-Pazar",
+							"type": "text"
+						},
+						{
+							"key": "open2",
+							"value": "12:00",
+							"type": "text"
+						},
+						{
+							"key": "close2",
+							"value": "20:00",
+							"type": "text"
+						},
+						{
+							"key": "isClosed2",
+							"value": "false",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc12540759",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc12540759"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Comment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "author",
+							"value": "Berra",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "5",
+							"type": "text"
+						},
+						{
+							"key": "text",
+							"value": "Çok güzel ve sakin yer kahveler harika.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc12540759/comments",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc12540759",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Comment",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update Comment",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "author",
+							"value": "Berra",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "text",
+							"value": "Yorumumu güncelledim çünkü kahve üstüme döküldü:)",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc12540759/comments/693ef508edc6bfc8e3b10915",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc12540759",
+						"comments",
+						"693ef508edc6bfc8e3b10915"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Comment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc12540759/comments/693ef508edc6bfc8e3b10915",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc12540759",
+						"comments",
+						"693ef508edc6bfc8e3b10915"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Venue",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://mekanbul-lpaz.vercel.app/api/venues/693eed3e336ceacc12540759",
+					"protocol": "https",
+					"host": [
+						"mekanbul-lpaz",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"api",
+						"venues",
+						"693eed3e336ceacc12540759"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
