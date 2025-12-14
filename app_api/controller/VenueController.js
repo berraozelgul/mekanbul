@@ -25,7 +25,7 @@ const listVenues = function (req, res) {
     var point = { type: "Point", coordinates: [long, lat] }; 
     var geoOptions = {
         distanceField: "distance", spherical: true,
-        maxDistance: converter.kilometer2Radian(100) // maxDistance radian cinsinden beklenir
+        maxDistance: converter.kilometer2Radian(100)
     };
     try {
         Venue.aggregate([
@@ -36,7 +36,7 @@ const listVenues = function (req, res) {
             }]).then((result) => {
                 const venues = result.map(function (venue) {
                     return {
-                        distance: converter.radian2Kilometer(venue.distance), // Burada kilometreye çeviriyoruz
+                        distance: converter.radian2Kilometer(venue.distance), 
                         name: venue.name,
                         address: venue.address,
                         rating: venue.rating,
@@ -60,7 +60,7 @@ const addVenue = async function (req, res) {
         const newVenue = await Venue.create({
             // req.body'den gelen diğer alanları al
             ...req.body, 
-            // MongoDB GeoJSON formatı için [BOYLAM (Long), ENLEM (Lat)] sırası kullanılır
+            // KRİTİK DÜZELTME: long ve lat'i Number olarak alıp [BOYLAM, ENLEM] sırasıyla kaydet
             coordinates: [parseFloat(req.body.long), parseFloat(req.body.lat)], 
             // Saatler dizisini oluştur
             hours: [{
@@ -77,12 +77,12 @@ const addVenue = async function (req, res) {
             ]
         });
         
-        // BAŞARILI yanıtı anında göndererek zaman aşımını engelle.
+        // BAŞARILI yanıtı anında gönder.
         createResponse(res, 201, newVenue); 
 
     } catch (err) {
-        // Hata durumunda 400 Bad Request yanıtı gönderilir.
-        createResponse(res, 400, err); 
+        // Hata durumunda (400) Bad Request yanıtı gönderilir ve sadece hata mesajı döndürülür.
+        createResponse(res, 400, { status: "Mekan eklenemedi. Veri formatını kontrol edin.", error: err.message }); 
     }
 }
 
@@ -106,6 +106,7 @@ const updateVenue = async function (req, res) {
    try{
         const updatedVenue = await Venue.findByIdAndUpdate(req.params.venueid,{
             ...req.body,
+            // Koordinat sırası [BOYLAM, ENLEM]
             coordinates:[parseFloat(req.body.long),parseFloat(req.body.lat)],
             hours:[
                 {
@@ -122,9 +123,9 @@ const updateVenue = async function (req, res) {
                 }
             ]
         },{new:true});
-        createResponse(res,200,updatedVenue); // Güncelleme başarılıysa 200 kullanılmalıdır.
+        createResponse(res,200,updatedVenue); 
    } catch (error) {
-        createResponse(res,400,{status: "Güncelleme başarısız.",error});
+        createResponse(res,400,{status: "Güncelleme başarısız.",error: error.message});
    }
 };
 
